@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restx import Api, Resource, fields
 import joblib
-from m09_model_deployment import predict_popularity
+from m_model_deployment import predict_popularity
 app = Flask(__name__)
 api = Api(app, version='1.0', title='Predicción de Popularidad en Canciones',
           description='Predice la popularidad con base en características de audio')
