@@ -1,24 +1,22 @@
 from flask import Flask
-from flask_restx import Api, Resource, fields
+from flask_restx import Api, Resource, fields, reqparse
 from m_model_deployment import predict_popularity
 
-# Crear la aplicación Flask
 app = Flask(__name__)
 
-# Crear la API con Swagger limpio (sin X-Fields)
 api = Api(
     app,
     version='1.0',
     title='Predicción de Popularidad en Canciones',
     description='API que predice la popularidad de canciones basándose en características de audio',
-    mask_swagger=False  # <<< Esto elimina X-Fields
+    doc='/swagger',  # URL del Swagger UI
+    mask=None        # <<< Cambio real que evita generación automática de "mask"
 )
 
-# Crear un namespace
 ns = api.namespace('predict', description='Predicción de la popularidad en canciones')
 
-# Definir los argumentos de entrada
-parser = ns.parser()
+parser = reqparse.RequestParser(trim=True)  # <<< Usa reqparse directamente y limpio
+
 parser.add_argument('duration_ms', type=float, required=True, 
                     help='Duración de la canción en milisegundos (133860 a 5237295)', location='args')
 parser.add_argument('acousticness', type=float, required=True, 
@@ -30,16 +28,14 @@ parser.add_argument('speechiness', type=float, required=True,
 parser.add_argument('danceability', type=float, required=True, 
                     help='Grado de bailable de la canción (0.0 a 0.985)', location='args')
 
-# Definir el modelo de respuesta
 resource_fields = api.model('Respuesta', {
     'predicted_popularity_score': fields.Float,
     'popularity_category': fields.String,
 })
 
-# Definir la clase del recurso
 @ns.route('/')
 class PopularityApi(Resource):
-    @api.doc(parser=parser)
+    @api.expect(parser)
     @api.marshal_with(resource_fields)
     def get(self):
         args = parser.parse_args()
@@ -49,6 +45,5 @@ class PopularityApi(Resource):
         except ValueError as e:
             return {'message': str(e)}, 400
 
-# Ejecutar la aplicación
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
