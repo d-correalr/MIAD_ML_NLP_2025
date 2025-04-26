@@ -11,11 +11,14 @@ ns = api.namespace('predict', description='Predicción popularidad en canción')
 
 parser = ns.parser()
 parser.add_argument('duration_ms', type=float, required=True, help='Duración en milisegundos', location='args')
-parser.add_argument('danceability', type=float, required=True, help='Danceabilidad', location='args')
+parser.add_argument('acousticness', type=float, required=True, help='Grado de acústica', location='args')
 parser.add_argument('valence', type=float, required=True, help='Valencia', location='args')
+parser.add_argument('speechiness', type=float, required=True, help='Cantidad de voz hablada', location='args')
+parser.add_argument('danceability', type=float, required=True, help='Danceabilidad', location='args')
 
 resource_fields = api.model('Respuesta', {
-    'result': fields.String,
+    'predicted_popularity_score': fields.Float,
+    'popularity_category': fields.String,
 })
 
 @ns.route('/')
@@ -24,12 +27,8 @@ class PopularityApi(Resource):
     @api.marshal_with(resource_fields)
     def get(self):
         args = parser.parse_args()
-        duration = args['duration_ms']
-        danceability = args['danceability']
-        valence = args['valence']
-        
-        result = predict_popularity(duration, danceability, valence)
-        return {'result': str(result)}, 200
+        result = predict_popularity(**args)
+        return result, 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
