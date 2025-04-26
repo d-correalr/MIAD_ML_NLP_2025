@@ -24,7 +24,11 @@ class PopularityApi(Resource):
     @api.marshal_with(resource_fields)
     def get(self):
         args = parser.parse_args()
-        result = predict_popularity(**args)
+        duration = args['duration_ms']
+        danceability = args['danceability']
+        valence = args['valence']
+        
+        result = predict_popularity(duration, danceability, valence)
         return {'result': str(result)}, 200
 
 if __name__ == '__main__':
