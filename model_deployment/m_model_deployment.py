@@ -16,8 +16,8 @@ def categorizar_popularidad(score):
         return "Alta popularidad"
 
 # --- Función para validar los inputs de la API ---
-def validate_inputs(duration, acousticness, valence, speechiness, danceability):
-    if not (133860 <= duration <= 5237295):
+def validate_inputs(duration_ms, acousticness, valence, speechiness, danceability):
+    if not (133860 <= duration_ms <= 5237295):
         raise ValueError("duration_ms fuera de rango permitido (133860 - 5237295)")
     if not (0.0 <= acousticness <= 0.996):
         raise ValueError("acousticness fuera de rango permitido (0.0 - 0.996)")
@@ -29,13 +29,13 @@ def validate_inputs(duration, acousticness, valence, speechiness, danceability):
         raise ValueError("danceability fuera de rango permitido (0.0 - 0.985)")
 
 # --- Función principal para predecir ---
-def predict_popularity(duration, acousticness, valence, speechiness, danceability):
+def predict_popularity(duration_ms, acousticness, valence, speechiness, danceability):
     # Validar los inputs antes de predecir
-    validate_inputs(duration, acousticness, valence, speechiness, danceability)
+    validate_inputs(duration_ms, acousticness, valence, speechiness, danceability)
 
     # Crear el DataFrame de entrada
     data = pd.DataFrame([{
-        'duration_ms': duration,
+        'duration_ms': duration_ms,
         'acousticness': acousticness,
         'valence': valence,
         'speechiness': speechiness,
