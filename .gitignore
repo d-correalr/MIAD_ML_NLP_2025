@@ -1,3 +1,6 @@
 rawfiles/
 .DS_Store
 **/*.ipynb_checkpoints/
+model_deployment/phishing_clf.pkl
+model_deployment/__pycache__/m09_model_deployment.cpython-39.pyc
+model_deployment/phishing_clf.pkl
