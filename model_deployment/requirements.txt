@@ -21,4 +21,4 @@ tqdm>=4.66.0
 joblib>=1.3.0
 
 # EVITAR CONFLICTOS
-typing-extensions==4.7.1
+#typing-extensions==4.7.1
